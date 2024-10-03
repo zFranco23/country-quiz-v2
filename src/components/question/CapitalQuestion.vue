@@ -1,53 +1,101 @@
-
 <script setup lang="ts">
-import { computed } from 'vue';
-import { CountryName } from '../../interfaces/country';
-import { CapitalQuestion } from '../../interfaces/question';
-import { useGameStore } from '../../store/game';
+import { computed } from 'vue'
+import { CountryName } from '../../interfaces/country'
+import { CapitalQuestion } from '../../interfaces/question'
+import { useGameStore } from '../../store/game'
+import AnswerStatusIcon from './AnswerStatusIcon.vue'
 
-const store = useGameStore();
-const {question, index} = defineProps<{question: CapitalQuestion, index: number}>()
+const store = useGameStore()
+const { question, index } = defineProps<{
+  question: CapitalQuestion
+  index: number
+}>()
 
- 
- const handleAnswerQuestion = (answer: CountryName) => {    
-    store.answerQuestion(index, answer)
- }
-
-
- const isAnswered = computed(( ) => !!question.userAnswer)
-
-
-const getIsValidFlag = (currentAnswer: CountryName) => {
-    const userAnswer = question.userAnswer;
-    return currentAnswer.common === userAnswer?.common && userAnswer.common === question.answer.common  ? 'correct' : 'incorrect';
+const handleAnswerQuestion = (answer: CountryName) => {
+  store.answerQuestion(index, answer)
 }
 
+const isAnswered = computed(() => !!question.userAnswer)
+
+const getIsValidFlag = (currentAnswer: CountryName) => {
+  const userAnswer = question.userAnswer
+  return currentAnswer.common === userAnswer?.common &&
+    userAnswer.common === question.answer.common
+    ? 'correct'
+    : 'incorrect'
+}
 </script>
 
 <template>
-    <div>
-        <p>Which country is {{ question.question[0] }} the capital?</p>
+  <div>
+    <p class="title">
+      Which country is {{ question.question[0] }} the capital?
+    </p>
 
-        <div class="answers">
+    <div class="answers">
+      <button
+        class="answer"
+        type="button"
+        :disabled="isAnswered"
+        v-for="answer of question.answers"
+        :key="answer.common"
+        @click="handleAnswerQuestion(answer)"
+        :class="{
+          'current-answer': question.userAnswer?.common === answer.common,
+        }"
+      >
+        {{ answer.common }}
 
-            <button type="button" :disabled="isAnswered"  v-for="answer of question.answers" :key="answer.common" @click="handleAnswerQuestion(answer)">
-                {{ answer.common }} {{ isAnswered ? getIsValidFlag(answer): undefined }}
-            </button>
+        <div v-if="!!question.userAnswer">
+          <AnswerStatusIcon
+            v-if="question.userAnswer.common === answer.common"
+            :status="getIsValidFlag(answer)"
+          />
+          <AnswerStatusIcon
+            v-else-if="question.answer.common === answer.common"
+            status="correct"
+          />
         </div>
+      </button>
     </div>
+  </div>
 </template>
 
-
 <style scoped lang="scss">
-
+.title {
+  text-align: center;
+  color: white;
+  font-size: 32px;
+  margin: 32px 0;
+}
 
 .answers {
-        display: grid;
-        gap: 32px;
+  display: grid;
+  gap: 32px;
 
-        @media(min-width: 768px){
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
+.answer {
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  padding: 16px;
+  background-color: #343964;
+  font-weight: 500;
+  color: white;
+  transition: all 0.3s ease-in-out;
+  font-size: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not([disabled]),
+  &.current-answer {
+    background: linear-gradient(#e65895, #bc6be8);
+  }
+}
 </style>

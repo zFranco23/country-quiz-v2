@@ -1,31 +1,70 @@
-
 <script setup>
-import { storeToRefs } from 'pinia';
-import { useGameStore } from '../store/game';
-import Question from './question/Question.vue';
-import { ref } from 'vue';
+import { storeToRefs } from 'pinia'
+import { useGameStore } from '../store/game'
+import Question from './question/Question.vue'
+import { ref } from 'vue'
 
-const questionSelectedIndex = ref(0);
+const questionSelectedIndex = ref(0)
 
-    const store = useGameStore()
-    const {questions} = storeToRefs(store)
-
+const store = useGameStore()
+const { questions } = storeToRefs(store)
 </script>
 
 <template>
-    <div>
-        <h1>
-            Country quiz
-        </h1>
+  <div>
+    <h1 class="title">Country quiz</h1>
 
-        <button v-for="(question, idx) of questions" :key="question.question" @click="questionSelectedIndex = idx">
-           {{  idx + 1 }} 
-        </button>
-
-        <Question :question="questions[questionSelectedIndex]" :index="questionSelectedIndex" />
+    <div class="questions__list">
+      <button
+        v-for="(question, idx) of questions"
+        :key="question.question"
+        @click="questionSelectedIndex = idx"
+        class="question"
+        :class="{ 'answered-question': !!question.userAnswer }"
+      >
+        {{ idx + 1 }}
+      </button>
     </div>
+
+    <Question
+      :question="questions[questionSelectedIndex]"
+      :index="questionSelectedIndex"
+    />
+  </div>
 </template>
 
 <style lang="scss" scoped>
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #8b8eab;
+  text-align: center;
+  margin-bottom: 16px;
+}
 
+.questions__list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.question {
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #343964;
+  color: white;
+  font-weight: 500;
+  font-family: BeVietnamPro;
+}
+
+.answered-question {
+  background: linear-gradient(#e65895, #bc6be8);
+}
 </style>
