@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { Question } from '../../interfaces/question'
+import {
+  CapitalQuestion as CapitalQuestionType,
+  FlagQuestion as FlaqQuestionType,
+  Question,
+} from '../../interfaces/question'
 import CapitalQuestion from './CapitalQuestion.vue'
 import FlaqQuestion from './FlaqQuestion.vue'
 
@@ -10,12 +14,12 @@ defineProps<{ question: Question; index: number }>()
   <div>
     <FlaqQuestion
       v-if="question.type === 'flag'"
-      :question="question"
+      :question="question as FlaqQuestionType"
       :index="index"
     />
     <CapitalQuestion
       v-if="question.type === 'capital'"
-      :question="question"
+      :question="question as CapitalQuestionType"
       :index="index"
     />
   </div>
