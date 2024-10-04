@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useGameStore } from '../store/game'
-import Question from './question/Question.vue'
 import { ref } from 'vue'
+import BaseQuestion from './question/BaseQuestion.vue'
 
 const questionSelectedIndex = ref(0)
 
@@ -17,7 +17,7 @@ const { questions } = storeToRefs(store)
     <div class="questions__list">
       <button
         v-for="(question, idx) of questions"
-        :key="question.question"
+        :key="'question-' + idx"
         @click="questionSelectedIndex = idx"
         class="question"
         :class="{ 'answered-question': !!question.userAnswer }"
@@ -26,7 +26,7 @@ const { questions } = storeToRefs(store)
       </button>
     </div>
 
-    <Question
+    <BaseQuestion
       :question="questions[questionSelectedIndex]"
       :index="questionSelectedIndex"
     />
