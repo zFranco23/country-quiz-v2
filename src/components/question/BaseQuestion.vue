@@ -74,6 +74,9 @@ const getIsValidFlag = (currentAnswer: CountryName) => {
 </template>
 
 <style lang="scss" scoped>
+.flag-img {
+  width: 2rem;
+}
 .title {
   text-align: center;
   color: white;
